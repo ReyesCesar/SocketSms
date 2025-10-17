@@ -77,6 +77,7 @@ app.post("/save", async (req, res) => {
   } catch (error) {
     console.error("Error en POST /phonenumber/save:", error);
       await logAudit("/phonenumber/save", error.message, JSON.stringify(req.body));
+      broadcastError(error.message);
     res.status(500).send("Error");
   }
 });
@@ -89,7 +90,8 @@ app.get("/phonenumber/get", async (req, res) => {
     res.json(data);
   } catch (e) {
     console.error("Error en GET /phonenumber/get:", e.message);
-      await logAudit("/phonenumber/get", error.message, JSON.stringify(req.body));
+      await logAudit("/phonenumber/get", e.message, JSON.stringify(req.body));
+      broadcastError(e.message);
     res.status(500).send("Error");
   }
 });
@@ -113,7 +115,8 @@ app.put("/phonenumber/edit", async (req, res) => {
     res.send("OK");
   } catch (e) {
     console.error("Error en Put /phonenumber/edit:", e.message);
-    await logAudit("/phonenumber/edit", error.message, JSON.stringify(req.body));
+    await logAudit("/phonenumber/edit", e.message, JSON.stringify(req.body));
+    broadcastError(e.message);
     res.status(500).send("Error");
   }
 });
@@ -125,7 +128,8 @@ app.delete("/phonenumber/delete", async (req, res) => {
     await db("phone_number_list").where({ imei, id }).del();
     res.status(200).send("200");
   } catch (e){
-    await logAudit("/phonenumber/delete", error.message, JSON.stringify(req.body));
+    await logAudit("/phonenumber/delete", e.message, JSON.stringify(req.body));
+    broadcastError(e.message);
     res.status(500).send("Error");
   }
 });
@@ -142,7 +146,8 @@ app.post("/phonename/save", async (req, res) => {
     await db("imei_name").insert({ imei, name });
     res.send("200");
   } catch (e){
-    await logAudit("/phonename/save", error.message, JSON.stringify(req.body));
+    await logAudit("/phonename/save", e.message, JSON.stringify(req.body));
+    broadcastError(e.message);
     res.status(400).send("210");
   }
 });
@@ -161,7 +166,8 @@ app.get("/phonename/get", async (req, res) => {
     res.json(rows);
   } catch (e) {
     console.error("Error en GET /phonename/get:", e);
-    await logAudit("/phonename/get", error.message, JSON.stringify(req.body));
+    await logAudit("/phonename/get", e.message, JSON.stringify(req.body));
+    broadcastError(e.message);
     res.status(500).send("Server");
   }
 });
@@ -174,7 +180,8 @@ app.put("/phonename/edit", async (req, res) => {
     if (updated) res.send("200");
     else res.status(400).send("Activo");
   } catch (e){
-    await logAudit("/phonename/edit", error.message, JSON.stringify(req.body));
+    await logAudit("/phonename/edit", e.message, JSON.stringify(req.body));
+    broadcastError(e.message);
     res.status(500).send("Error");
   }
 });
@@ -196,7 +203,8 @@ app.post("/timer/save", async (req, res) => {
     res.send("OK");
   } catch (e) {
     console.error("Error en POST /timer/save:", e.message);
-    await logAudit("/timer/save", error.message, JSON.stringify(req.body));
+    await logAudit("/timer/save", e.message, JSON.stringify(req.body));
+    broadcastError(e.message);
     res.status(500).send("Error");
   }
 });
@@ -209,7 +217,8 @@ app.get("/timer/get", async (req, res) => {
     if (!data.length) return res.status(400).send("400");
     res.json(data);
   } catch (e) {
-    await logAudit("/timer/get", error.message, JSON.stringify(req.body));
+    await logAudit("/timer/get", e.message, JSON.stringify(req.body));
+    broadcastError(e.message);
     res.status(500).send("Error");
   }
 });
@@ -221,7 +230,8 @@ app.put("/timer/edit", async (req, res) => {
     await db("timer").where({ id, imei }).update({ date });
     res.send("OK");
   } catch (e){
-    await logAudit("/timer/edit", error.message, JSON.stringify(req.body));
+    await logAudit("/timer/edit", e.message, JSON.stringify(req.body));
+    broadcastError(e.message);
     res.status(500).send("Error");
   }
 });
@@ -237,7 +247,8 @@ app.post("/counter", async (req, res) => {
     const [id] = await db("counter").insert({ imei, counter });
     res.json({ id, imei, counter });
   } catch (e) {
-    await logAudit("/counter/save", error.message, JSON.stringify(req.body));
+    await logAudit("/counter/save", e.message, JSON.stringify(req.body));
+    broadcastError(e.message);
     res.status(500).send("Error");
   }
 });
@@ -250,7 +261,8 @@ app.get("/counter/get", async (req, res) => {
     if (!data.length) return res.status(400).send("400");
     res.json(data);
   } catch (e) {
-    await logAudit("/counter/get", error.message, JSON.stringify(req.body));
+    await logAudit("/counter/get", e.message, JSON.stringify(req.body));
+    broadcastError(e.message);
     res.status(500).send("Error");
   }
 });
@@ -263,7 +275,8 @@ app.put("/counter/:id", async (req, res) => {
     await db("counter").where({ id }).update({ counter });
     res.json({ message: "Actualizado" });
   } catch (e){
-    await logAudit("/counter/getid", error.message, JSON.stringify(req.body));
+    await logAudit("/counter/getid", e.message, JSON.stringify(req.body));
+    broadcastError(e.message);
     res.status(500).send("Error");
   }
 });
@@ -275,7 +288,8 @@ app.delete("/counter/:id", async (req, res) => {
     await db("counter").where({ id }).del();
     res.json({ message: "Eliminado" });
   } catch (e){
-    await logAudit("/counter/delete", error.message, JSON.stringify(req.body));
+    await logAudit("/counter/delete", e.message, JSON.stringify(req.body));
+    broadcastError(e.message);
     res.status(500).send("Error");
   }
 });
@@ -299,11 +313,19 @@ nsp.emit("message", { msg: payload });
     });
   } catch (e) {
     console.error("error en /send:", e);
+    broadcastError(e.message);
     res.status(500).json({ status: "Error" });
   }
 });
 
 
+function broadcastError(message) {
+  nsp.emit("error_message", {
+    from: "server",
+    text: message,
+  });
+  console.log(`⚠️ Error enviado a todos: ${message}`);
+}
 
 const PORT = 3030;
 server.listen(PORT, () => {

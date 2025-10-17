@@ -1,6 +1,6 @@
 import { io } from "socket.io-client";
 
-const socket = io("http://localhost:3030/message", { reconnection: true });
+const socket = io("http://66.179.243.189:3030/message", { reconnection: true });
 
 socket.on("connect", () => {
   console.log("✅ Conectado al servidor con ID:", socket.id);
