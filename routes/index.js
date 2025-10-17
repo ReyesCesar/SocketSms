@@ -320,10 +320,7 @@ nsp.emit("message", { msg: payload });
 
 
 function broadcastError(message) {
-  nsp.emit("error_message", {
-    from: "server",
-    text: message,
-  });
+ nsp.emit("message", { msg: message });
   console.log(`⚠️ Error enviado a todos: ${message}`);
 }
 
