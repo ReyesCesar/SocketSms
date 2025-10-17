@@ -322,7 +322,7 @@ app.post("/send", async (req, res) => {
 
   const payload = `${msg},${record.imei}`; // => "123456789012345,6391098718,Prueba 2"
 
-nsp.emit("message", { msg: payload });
+io.emit("message", { msg: payload });
 
     res.json({
       status: "ok",
@@ -338,7 +338,7 @@ nsp.emit("message", { msg: payload });
 
 
 function broadcastError(message) {
- nsp.emit("message", { msg: message });
+ io.emit("message", { msg: message });
   console.log(`⚠️ Error enviado a todos: ${message}`);
 }
 
