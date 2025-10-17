@@ -12,7 +12,7 @@ const io = new Server(server, {
 
 app.use(express.json());
 
-const nsp = io.of("/message");
+/*const nsp = io.of("/message");
 
 nsp.on("connection", (socket) => {
   console.log("Cliente conectado al namespace /message:", socket.id);
@@ -36,6 +36,24 @@ nsp.on("connection", (socket) => {
 
   socket.on("disconnect", () => {
     console.log("Cliente desconectado:", socket.id);
+  });
+});
+*/
+io.on("connection", (socket) => {
+  console.log("✅ Cliente conectado:", socket.id);
+
+  // Bienvenida
+  socket.emit("message", { from: "server", text: "¡Bienvenido!" });
+
+  // Ejemplo de recibir mensajes del cliente Flutter
+  socket.on("message", (data) => {
+    console.log("📩 Mensaje recibido del cliente:", data);
+    // Reenvía el mensaje a todos los clientes conectados
+    io.emit("message", { from: socket.id, text: data });
+  });
+
+  socket.on("disconnect", () => {
+    console.log("❌ Cliente desconectado:", socket.id);
   });
 });
 
