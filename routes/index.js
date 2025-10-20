@@ -48,6 +48,7 @@ io.on("connection", (socket) => {
   // Ejemplo de recibir mensajes del cliente Flutter
   socket.on("message", (data) => {
     console.log("📩 Mensaje recibido del cliente:", data);
+     console.log("📨 Emit recibido desde Flutter:", data);
     // Reenvía el mensaje a todos los clientes conectados
     io.emit("message", { from: socket.id, text: data });
   });
