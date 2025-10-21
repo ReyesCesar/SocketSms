@@ -325,7 +325,7 @@ app.post("/send", async (req, res) => {
 
    const payload = `${msg},${imeiRecord.socket_identifier}`;
 
-    io.emit("message", { msg: payload });
+    io.emit("message",  payload );
 
     res.json({
       status: "ok",
