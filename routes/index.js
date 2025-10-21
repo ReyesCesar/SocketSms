@@ -320,7 +320,10 @@ app.post("/send", async (req, res) => {
     const record = await db("phone_number_list").where({ description: name }).first();
     if (!record) return res.status(404).json({ error: "Teléfono no encontrado" });
 
-     const payload = `${msg},${record.socket_identifier}`; 
+     const imeiRecord = await db("imei_name").where({ imei: record.imei }).first();
+    if (!imeiRecord) return res.status(404).json({ error: "Socket no encontrado para ese IMEI" });
+
+   const payload = `${msg},${imeiRecord.socket_identifier}`;
 
     io.emit("message", { msg: payload });
 
