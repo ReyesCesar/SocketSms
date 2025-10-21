@@ -173,12 +173,12 @@ app.post("/phonename/save", async (req, res) => {
 
 // GET /phonename/get?imei=...
 app.get("/phonename/get", async (req, res) => {
- try {
+  try {
     const { imei } = req.query;
-    const rows = await db("imei_name").where({ imei });
+    const rows = await db("imei_name").where({ socket_identifier: imei }); 
 
     if (!rows.length) {
-      console.log(`No se encontraron registros para IMEI: ${imei}`);
+      console.log(`No se encontraron registros para socket_identifier: ${imei}`);
       return res.status(400).send("400");
     }
 
@@ -190,7 +190,6 @@ app.get("/phonename/get", async (req, res) => {
     res.status(500).send("Server");
   }
 });
-
 // PUT /phonename/edit
 app.put("/phonename/edit", async (req, res) => {
   try {
