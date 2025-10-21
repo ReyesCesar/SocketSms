@@ -320,14 +320,14 @@ app.post("/send", async (req, res) => {
     const record = await db("phone_number_list").where({ description: name }).first();
     if (!record) return res.status(404).json({ error: "Teléfono no encontrado" });
 
-  const payload = `${msg},${record.imei}`; // => "123456789012345,6391098718,Prueba 2"
+     const payload = `${msg},${record.socket_identifier}`; 
 
-io.emit("message", { msg: payload });
+    io.emit("message", { msg: payload });
 
     res.json({
       status: "ok",
       message: "Mensaje enviado a todos los clientes",
-      data: { msg, name, imei: record.imei },
+    data: { msg, name, socket_identifier: record.socket_identifier },
     });
   } catch (e) {
     console.error("error en /send:", e);
