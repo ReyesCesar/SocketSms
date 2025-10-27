@@ -317,16 +317,10 @@ app.delete("/counter/:id", async (req, res) => {
 app.post("/send", async (req, res) => {
   try {
     const { msg, name } = req.body;
-    const record = await db("phone_number_list").where({ description: name }).first();
-    if (!record) return res.status(404).json({ error: "Teléfono no encontrado" });
-
-     const imeiRecord = await db("imei_name").where({ imei: record.imei }).first();
+     const imeiRecord = await db("imei_name").where({ name: name }).first();
     if (!imeiRecord) return res.status(404).json({ error: "Socket no encontrado para ese IMEI" });
-
    const payload = `${msg},${imeiRecord.socket_identifier}`;
-
     io.emit("message",  payload );
-
     res.json({
       status: "ok",
       message: "Mensaje enviado a todos los clientes",
