@@ -321,11 +321,7 @@ app.post("/send", async (req, res) => {
     if (!imeiRecord) return res.status(404).json({ error: "Socket no encontrado para ese IMEI" });
    const payload = `${msg},${imeiRecord.socket_identifier}`;
     io.emit("message",  payload );
-    res.json({
-      status: "ok",
-      message: "Mensaje enviado a todos los clientes",
-    data: { msg, name, socket_identifier: record.socket_identifier },
-    });
+      res.sendStatus(204); 
   } catch (e) {
     console.error("error en /send:", e);
     broadcastError(e.message);
