@@ -84,9 +84,9 @@ router.delete("/phonenumber/delete", async (req, res) => {
 
 router.post("/phonename/save", async (req, res) => {
   try {
-    const { imei, name } = req.body;
+    const { imei, name,socket_identifier } = req.body;
     if (!imei || !name) return res.status(400).send("Error");
-    await db("imei_name").insert({ imei, name });
+    await db("imei_name").insert({ imei, name,socket_identifier });
     res.send("200");
   } catch (e) {
     await logAudit("/phonename/save", e.message, JSON.stringify(req.body));
